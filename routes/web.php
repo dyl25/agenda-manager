@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/booking/{any}', function() {
+    return view('layouts.app-vue-front');
+})->where('any', '.*');
+
+Route::get('/admin/{any}', function () {
+    return view('layouts.admin.app-vue-admin');
+})->where('any', '.*');
