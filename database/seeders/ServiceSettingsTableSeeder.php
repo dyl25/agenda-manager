@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ServiceSetting;
 use Illuminate\Database\Seeder;
 
 class ServiceSettingsTableSeeder extends Seeder
@@ -13,6 +14,6 @@ class ServiceSettingsTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        ServiceSetting::factory()->count(3)->create();
     }
 }

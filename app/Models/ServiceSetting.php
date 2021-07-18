@@ -9,7 +9,18 @@ class ServiceSetting extends Model
 {
     use HasFactory;
 
+    const WEEKDAYS = [
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday',
+    ];
+
     protected $fillable = [
+        'user_id',
         'name',
         'day_fom',
         'day_to',
@@ -18,4 +29,8 @@ class ServiceSetting extends Model
         'duration',
         'price',
     ];
+
+    public static function getWeekdays() {
+        return self::WEEKDAYS;
+    }
 }

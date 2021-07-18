@@ -20,9 +20,9 @@ class CreateServiceSettingsTable extends Migration
             $table->string('name', 50);
             $table->string('day_fom', 15);
             $table->string('day_to', 15);
-            $table->integer('start_time');
-            $table->integer('end_time');
-            $table->integer('duration');
+            $table->string('start_time', 4);
+            $table->string('end_time', 4);
+            $table->string('duration', 4);
             $table->decimal('price', 9, 3);
             $table->timestamps();
         });
