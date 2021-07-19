@@ -9,7 +9,7 @@ export default new Router({
     mode: 'history',
     routes: [
         {
-            path: '/booking',
+            path: '/booking/choose',
             name: 'booking',
             component: BookingList
         },

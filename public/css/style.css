@@ -1,0 +1,8 @@
+.clickable {
+    cursor: pointer;
+}
+
+.card:hover{
+    background-color: #0dcaf0;
+    color: #f8f9fa;
+}
