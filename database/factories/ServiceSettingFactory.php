@@ -34,6 +34,7 @@ class ServiceSettingFactory extends Factory
         return [
             'user_id' => 1,
             'name' => $this->faker->word(),
+            'places' => rand(1, 10),
             'day_fom' => $dayFrom,
             'day_to' => $dayTo,
             'start_time' => '0'.$startTime,

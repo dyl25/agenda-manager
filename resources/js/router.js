@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import BookingList from './views/BookingList'
 import Dashboard from './views/Dashboard'
+import CreateService from './views/admin/service/CreateService'
 
 Vue.use(Router);
 
@@ -14,9 +15,9 @@ export default new Router({
             component: BookingList
         },
         {
-            path: '/admin/dashboard',
-            name: 'admin',
-            component: Dashboard
+            path: '/admin/service/create',
+            name: 'service-create',
+            component: CreateService
         }
     ]
 })

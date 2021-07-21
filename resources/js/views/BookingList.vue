@@ -1,9 +1,9 @@
 <template>
 
 <div>
-<Navbar />
+<navbar />
 
-<ServiceDisplay service-url="/api/services" />
+<service-display all-services-url="/api/services" />
 </div>
 
 </template>
@@ -15,10 +15,10 @@ import ServiceDisplay from '../components/ServiceDisplay'
 export default {
     name: 'BookingList',
 
-    components: [
+    components: {
         Navbar,
         ServiceDisplay,
-    ],
+    },
 }
 
 </script>
