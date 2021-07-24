@@ -19,8 +19,8 @@ class CreateServiceSettingsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name', 50);
             $table->smallInteger('places')->default(1)->nullable();
-            $table->string('day_fom', 15);
-            $table->string('day_to', 15);
+            //$table->string('day_fom', 15);
+            //$table->string('day_to', 15);
             $table->tinyInteger('monday')->default(0)->nullable();
             $table->tinyInteger('tuesday')->default(0)->nullable();
             $table->tinyInteger('wednesday')->default(0)->nullable();

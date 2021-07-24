@@ -2,16 +2,16 @@
     <div>
         <h3 class="my-3">Création d'une prestation</h3>
 
-        <form action="#">
+        <form @submit.prevent="createService" action="#">
             <div class="mb-3 row">
                 <label for="serviceName" class="form-label">Nom</label>
                 <input
-                    v-model="form.name"
+                    v-model.trim="form.name"
                     class="form-control"
                     type="text"
                     id="serviceName"
                     name="serviceName"
-                />
+                >
             </div>
 
             <div class="mb-3 row">
@@ -26,7 +26,8 @@
                                 type="checkbox"
                                 id="cbAlldays"
                                 value="allDays"
-                            />
+                                name="cbAlldays"
+                            >
                             <label class="form-check-label" for="cbAlldays"
                                 >Tous les jours</label
                             >
@@ -39,7 +40,8 @@
                                 type="checkbox"
                                 id="cbMonday"
                                 value="monday"
-                            />
+                                name="cbMonday"
+                            >
                             <label class="form-check-label" for="cbMonday"
                                 >Lundi</label
                             >
@@ -51,7 +53,8 @@
                                 type="checkbox"
                                 id="cbTuesday"
                                 value="tuesday"
-                            />
+                                name="cbTuesday"
+                            >
                             <label class="form-check-label" for="cbTuesday"
                                 >Mardi</label
                             >
@@ -63,7 +66,8 @@
                                 type="checkbox"
                                 id="cbWednesday"
                                 value="wednesday"
-                            />
+                                name="cbWednesday"
+                            >
                             <label class="form-check-label" for="cbWednesday"
                                 >Mercredi</label
                             >
@@ -75,7 +79,8 @@
                                 type="checkbox"
                                 id="cbThursday"
                                 value="thursday"
-                            />
+                                name="cbThursday"
+                            >
                             <label class="form-check-label" for="cbThursday"
                                 >Jeudi</label
                             >
@@ -87,7 +92,8 @@
                                 type="checkbox"
                                 id="cbFriday"
                                 value="friday"
-                            />
+                                name="cbFriday"
+                            >
                             <label class="form-check-label" for="cbFriday"
                                 >Vendredi</label
                             >
@@ -99,7 +105,8 @@
                                 type="checkbox"
                                 id="cbSaturday"
                                 value="saturday"
-                            />
+                                name="cbSaturday"
+                            >
                             <label class="form-check-label" for="cbSaturday"
                                 >Samedi</label
                             >
@@ -111,7 +118,8 @@
                                 type="checkbox"
                                 id="cbSunday"
                                 value="sunday"
-                            />
+                                name="cbSunday"
+                            >
                             <label class="form-check-label" for="cbSunday"
                                 >Dimanche</label
                             >
@@ -144,7 +152,9 @@
                                     v-model="form.hours[index].startTime"
                                     class="form-control"
                                     type="time"
-                                />
+                                    :id="'frequencyStart' + index"
+                                    :name="'frequencyStart' + index"
+                                >
                             </div>
 
                             <div class="col-sm-6">
@@ -157,7 +167,9 @@
                                     v-model="form.hours[index].endTime"
                                     class="form-control"
                                     type="time"
-                                />
+                                    :id="'frequencyEnd' + index"
+                                    :name="'frequencyEnd' + index"
+                                >
                             </div>
                         </div>
 
@@ -176,18 +188,25 @@
             </div>
 
             <div class="mb-3 row">
-                <div class="col-sm-6">
-                    <label for="exampleFormControlInput1" class="form-label"
+                <div class="col-sm-4">
+                    <label for="duration" class="form-label"
                         >Durée</label
                     >
-                    <input class="form-control" type="time" value="01:00" />
+                    <input v-model="form.duration" name="duration" id="duration" class="form-control" type="time">
                 </div>
 
-                <div class="col-sm-6">
-                    <label for="exampleFormControlInput1" class="form-label"
+                <div class="col-sm-4">
+                    <label for="places" class="form-label"
+                        >Places</label
+                    >
+                    <input v-model.number="form.places" name="places" id="places" class="form-control" type="number">
+                </div>
+
+                <div class="col-sm-4">
+                    <label for="price" class="form-label"
                         >Prix</label
                     >
-                    <input class="form-control" type="number" />
+                    <input v-model.number="form.price" name="price" id="price" class="form-control" type="number" >
                 </div>
             </div>
 
@@ -205,6 +224,7 @@ export default {
 
     data() {
         return {
+            isLoadingSend: false,
             defaultHourses: {
                 startTime: "08:00",
                 endTime: "16:00",
@@ -215,7 +235,7 @@ export default {
                 hours: [],
                 places: 1,
                 duration: "01:00",
-                price: null,
+                price: 0,
             },
             weekDays: [
                 "monday",
@@ -230,17 +250,17 @@ export default {
     },
 
     created() {
-        this.initForm();
+        this.initForm()
     },
 
     methods: {
         initForm() {
-            this.form.hours.push(Object.assign({}, this.defaultHourses));
+            this.form.hours.push(Object.assign({}, this.defaultHourses))
         },
 
         addTimePeriod() {
             if (this.form.hours.length < 2) {
-                this.form.hours.push(Object.assign({}, this.defaultHourses));
+                this.form.hours.push(Object.assign({}, this.defaultHourses))
             }
         },
 
@@ -249,12 +269,25 @@ export default {
         },
 
         checkAllDays(event) {
-            this.form.days = [];
+            this.form.days = []
 
             if (event.target.checked) {
-                this.form.days = this.weekDays;
+                this.form.days = this.weekDays
             }
         },
+
+        createService() {
+            this.isLoadingSend = true
+
+            axios.post('/api/services', this.form)
+            .then(({data}) => {
+                this.isLoadingSend = false
+            })
+            .catch(err => {
+                this.isLoadingSend = false
+                console.log(err);
+            })
+        }
     },
 };
 </script>

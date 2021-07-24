@@ -20,3 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/services', [ServiceSettingController::class, 'index'])->name('services.index');
+Route::post('/services', [ServiceSettingController::class, 'store'])->name('services.store');
