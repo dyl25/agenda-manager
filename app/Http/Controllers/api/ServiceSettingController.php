@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class ServiceSettingController extends Controller
 {
     public function index() {
-        return ServiceSetting::all();
+        return ServiceSetting::with('times')->get();
     }
 
     public function store(StoreServiceRequest $request) {
@@ -28,17 +28,16 @@ class ServiceSettingController extends Controller
         }
 
         $service->save();
-
-        $serviceTimes = new ServiceSettingsTimes();
-
-        $serviceTimes->service_id = $service->id;
         
         foreach($request->hours as $hours) {
+            $serviceTimes = new ServiceSettingsTimes();
+
+            $serviceTimes->service_id = $service->id;
             $serviceTimes->start_time = str_replace(':', '', $hours['startTime']);
             $serviceTimes->end_time = str_replace(':', '', $hours['endTime']);
-        }
 
-        $serviceTimes->save();
+            $serviceTimes->save();
+        }
 
         return $service;
     }

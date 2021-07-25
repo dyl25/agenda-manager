@@ -33,11 +33,28 @@ class ServiceSetting extends Model
         'places'
     ];
 
+    protected $appends = [
+        'service_days'
+    ];
+
     public static function getWeekdays() {
         return self::WEEKDAYS;
     }
 
     public function times() {
-        return $this->hasMany(ServiceSettingsTimes::class);
+        return $this->hasMany(ServiceSettingsTimes::class, 'service_id');
+    }
+
+    public function getServiceDaysAttribute() {
+
+        $serviceDays = [];
+
+        foreach (self::WEEKDAYS as $day) {
+            if($this->{$day}) {
+                $serviceDays[] = $day;
+            }
+        }
+
+        return $serviceDays;
     }
 }
