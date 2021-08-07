@@ -4,6 +4,9 @@
         <booking-modal
             v-if="isBookingModalVisible"
             @close-modal="isBookingModalVisible = false"
+            :current-service-data="selectedService"
+            :current-day="selectedDay"
+            :current-time="selectedTime"
         />
 
         <div class="row mb-3">
@@ -24,7 +27,7 @@
                 >
                     <div
                         class="card m-1"
-                        @click="isBookingModalVisible = true"
+                        @click="selectBooking(service, dateObj.date, time)"
                     >
                         <div class="card-body clickable">
                             {{ time | formatTime }} - {{ service.name }} {{ service.places > 1 ? ' - ' + service.places + ' places' : null }}
@@ -39,7 +42,7 @@
 
 <script>
 import axios from "axios";
-import BookingModal from './service/BookingModal.vue';
+import BookingModal from './BookingModal.vue';
 
 export default {
     name: "ServiceDisplay",
@@ -70,6 +73,9 @@ export default {
             currentDate: this.defaultDate,
             remainingDates: [],
             isBookingModalVisible: false,
+            selectedService: null,
+            selectedDay: null,
+            selectedTime: null,
         };
     },
 
@@ -152,8 +158,15 @@ export default {
 
                 addedDate = addedDate.add(1, 'day')
             }
-
         },
+
+        selectBooking(service, day,time) {
+            this.isBookingModalVisible = true
+
+            this.selectedService = service
+            this.selectedDay = day
+            this.selectedTime = time
+        }
     },
 };
 </script>

@@ -14,6 +14,7 @@ class Booking extends Model
         'service_id',
         'moment',
         'email',
+        'mobile',
         'name',
         'firstname',
         'comments',

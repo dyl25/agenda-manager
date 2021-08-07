@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\ServiceSettingController;
+use App\Http\Controllers\api\BookingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/services', [ServiceSettingController::class, 'index'])->name('services.index');
 Route::post('/services', [ServiceSettingController::class, 'store'])->name('services.store');
+
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');

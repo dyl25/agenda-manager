@@ -21,9 +21,10 @@ class CreateBookingsTable extends Migration
             $table->foreign('service_id')->references('id')->on('service_settings')->onUpdate('cascade')->onDelete('cascade');
             $table->dateTime('moment');
             $table->string('email', 192);
+            $table->string('mobile', 20);
             $table->string('name', 40);
             $table->string('firstname', 40);
-            $table->text('comments');
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }

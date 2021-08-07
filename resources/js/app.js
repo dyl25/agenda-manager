@@ -23,6 +23,19 @@ Vue.filter('formatTime', function(value) {
 
 })
 
+Vue.filter('formatInputTime', function (value) {
+    const strVal = value.toString()
+
+    if (strVal.length === 3) {
+        value = '0' + strVal
+    }
+
+    const hours = value.slice(0, 2)
+    const minutes = value.slice(2)
+
+    return [hours, ':', minutes].join('');
+})
+
 new Vue({
     router: router,
 }).$mount('#app')

@@ -10,7 +10,7 @@
 <script>
 
 import Navbar from '../components/Navbar'
-import ServiceDisplay from '../components/ServiceDisplay'
+import ServiceDisplay from '../components/service/ServiceDisplay'
 
 export default {
     name: 'BookingList',

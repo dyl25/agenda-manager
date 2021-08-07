@@ -31,6 +31,7 @@ class BookingFactory extends Factory
             'service_id' => $currentService->id,
             'moment' => $this->faker->date(),
             'email' => $currentUser->email,
+            'mobile' => $this->faker->phoneNumber(),
             'name' => $currentUser->name,
             'firstname' => $currentUser->firstname,
             'comments' => implode('\n', $this->faker->sentences(3)),
