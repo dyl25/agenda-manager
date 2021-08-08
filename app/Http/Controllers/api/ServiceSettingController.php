@@ -6,12 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreServiceRequest;
 use App\Models\ServiceSetting;
 use App\Models\ServiceSettingsTimes;
+use App\Services\AgendaService;
 use Illuminate\Http\Request;
 
 class ServiceSettingController extends Controller
 {
+
+    protected $agendaService;
+
+    public function __construct(AgendaService $agendaService)
+    {
+        $this->agendaService = $agendaService;
+    }
+
     public function index() {
-        return ServiceSetting::with('times')->get();
+        //dd($this->agendaService->getAgenda());
+        return $this->agendaService->getAgenda();
+       //return ServiceSetting::with('times')->get();
     }
 
     public function store(StoreServiceRequest $request) {

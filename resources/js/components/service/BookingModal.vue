@@ -11,7 +11,7 @@
             <div class="mb-3 row">
                 <div class="col-sm-6">
                     <label class="form-label">Date</label>
-                    <input class="form-control" type="text" :value="currentDay.format('dddd D MMMM YYYY')"
+                    <input class="form-control" type="text" :value="currentDay.completeDate"
                         readonly>
                 </div>
 
@@ -100,7 +100,7 @@ export default {
             form: {
                 user_id: null,
                 service_id: this.currentServiceData.id,
-                date: this.currentDay.format('YYYY-MM-DD'),
+                date: this.currentDay.date,
                 time: this.currentTime,
                 email: null,
                 name: null,

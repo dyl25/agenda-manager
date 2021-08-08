@@ -92,6 +92,25 @@ class ServiceSetting extends Model
     }
 
     /**
+     * Get the schedules for each services
+     *
+     * @return void
+     */
+    public static function getAllSchedules($services) {
+        $schedules = [];
+
+        foreach ($services as $service) {
+            foreach($service->times as $time) {
+                for ($i = (int) $time->start_time; $i < (int) $time->end_time; $i += (int) $service->duration) {
+                    $schedules[$i] = $service;
+                }
+            }
+        }
+
+        return $schedules;
+    }
+
+    /**
      * Verify if a service respect the period settings
      *
      * @param string $moment The date of the service
@@ -138,5 +157,15 @@ class ServiceSetting extends Model
     public function isRemainingPlaces(string $moment): bool
     {
         return $this->getRemainingPlaces($moment) > 0;
+    }
+
+    /**
+     * Get number of places for the given date
+     *
+     * @param string $date
+     * @return integer
+     */
+    public function getPlacesForDay(string $date): int {
+        return 0;
     }
 }

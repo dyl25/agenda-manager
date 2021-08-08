@@ -20,7 +20,7 @@ class BookingController extends Controller
         }
 
         if(!$service->isRemainingPlaces($request->moment)) {
-            return new JsonResponse('Il n\y a plus de places disponibles pour cette horaire.', 422);
+            return new JsonResponse('Il n\'y a plus de places disponibles pour cette horaire.', 422);
         }
 
         $booking = Booking::create($request->validated());

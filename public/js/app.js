@@ -2028,7 +2028,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       form: {
         user_id: null,
         service_id: this.currentServiceData.id,
-        date: this.currentDay.format('YYYY-MM-DD'),
+        date: this.currentDay.date,
         time: this.currentTime,
         email: null,
         name: null,
@@ -2143,7 +2143,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      services: [],
       isServiceLoading: false,
       currentDate: this.defaultDate,
       remainingDates: [],
@@ -2156,13 +2155,6 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.loadData();
   },
-  watch: {
-    services: function services() {
-      if (this.services.length > 0) {
-        this.getRemainingDates();
-      }
-    }
-  },
   methods: {
     loadData: function loadData() {
       var _this = this;
@@ -2171,49 +2163,11 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default().get(this.allServicesUrl).then(function (_ref) {
         var data = _ref.data;
         _this.isServiceLoading = false;
-        _this.services = data;
+        _this.remainingDates = data;
       })["catch"](function (error) {
         _this.isServiceLoading = false;
         console.log(error);
       });
-    },
-    getSchedule: function getSchedule(services) {
-      var schedule = {};
-      services.map(function (service) {
-        service.times.map(function (time) {
-          for (var i = +time.start_time; i < +time.end_time; i += +service.duration) {
-            schedule[i] = service;
-          }
-        });
-      });
-      return schedule;
-    },
-    getRemainingDates: function getRemainingDates() {
-      var addedDate = this.currentDate;
-      var monthEnd = addedDate.endOf('month').add(1, 'day');
-
-      while (!addedDate.isSame(monthEnd, 'month')) {
-        var cpt = 0;
-        var servicesArr = [];
-
-        while (cpt <= this.services.length - 1) {
-          if (this.services[cpt].service_days.includes(addedDate.locale('en').format('dddd').toLowerCase())) {
-            servicesArr.push(this.services[cpt]);
-          }
-
-          cpt++;
-        }
-
-        if (servicesArr.length > 0) {
-          this.remainingDates.push({
-            date: addedDate,
-            hours: this.getSchedule(servicesArr) //services: servicesArr
-
-          });
-        }
-
-        addedDate = addedDate.add(1, 'day');
-      }
     },
     selectBooking: function selectBooking(service, day, time) {
       this.isBookingModalVisible = true;
@@ -20818,9 +20772,7 @@ var render = function() {
                       _c("input", {
                         staticClass: "form-control",
                         attrs: { type: "text", readonly: "" },
-                        domProps: {
-                          value: _vm.currentDay.format("dddd D MMMM YYYY")
-                        }
+                        domProps: { value: _vm.currentDay.completeDate }
                       })
                     ]),
                     _vm._v(" "),
@@ -21120,7 +21072,7 @@ var render = function() {
               "div",
               { key: "daySection" + index, staticClass: "row" },
               [
-                _c("h3", [_vm._v(_vm._s(dateObj.date.format("dddd D")))]),
+                _c("h3", [_vm._v(_vm._s(dateObj.dateFormat.day))]),
                 _vm._v(" "),
                 _vm._l(dateObj.hours, function(service, time) {
                   return _c(
@@ -21135,7 +21087,7 @@ var render = function() {
                             click: function($event) {
                               return _vm.selectBooking(
                                 service,
-                                dateObj.date,
+                                dateObj.dateFormat,
                                 time
                               )
                             }

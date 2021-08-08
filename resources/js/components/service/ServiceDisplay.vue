@@ -18,7 +18,7 @@
                 :key="'daySection' + index"
             >
 
-                <h3>{{ dateObj.date.format('dddd D') }}</h3>
+                <h3>{{ dateObj.dateFormat.day }}</h3>
 
                 <div 
                     class="col-lg-4"
@@ -27,7 +27,7 @@
                 >
                     <div
                         class="card m-1"
-                        @click="selectBooking(service, dateObj.date, time)"
+                        @click="selectBooking(service, dateObj.dateFormat, time)"
                     >
                         <div class="card-body clickable">
                             {{ time | formatTime }} - {{ service.name }} {{ service.places > 1 ? ' - ' + service.places + ' places' : null }}
@@ -68,7 +68,6 @@ export default {
 
     data() {
         return {
-            services: [],
             isServiceLoading: false,
             currentDate: this.defaultDate,
             remainingDates: [],
@@ -83,81 +82,19 @@ export default {
         this.loadData();
     },
 
-    watch: {
-        services() {
-            if(this.services.length > 0) {
-                this.getRemainingDates()
-            }
-        }
-    },
-
     methods: {
         loadData() {
             this.isServiceLoading = true;
             axios.get(this.allServicesUrl)
                 .then(({ data }) => {
                     this.isServiceLoading = false;
-
-                    this.services = data;
+                    this.remainingDates = data
                 })
                 .catch((error) => {
                     this.isServiceLoading = false;
 
                     console.log(error);
                 });
-        },
-
-        getSchedule(services) {
-
-            let schedule = {}
-
-            services.map(service => {
-                service.times.map((time) => {
-                    for(let i=+time.start_time; i < +time.end_time; i+= +service.duration) {
-                        schedule[i] = service
-                    }
-                })
-            })
-
-            return schedule
-        },
-
-        getRemainingDates() {
-            let addedDate = this.currentDate
-            const monthEnd = addedDate.endOf('month').add(1, 'day');
-
-            while (!addedDate.isSame(monthEnd, 'month')) {
-
-                let cpt = 0
-                let servicesArr = []
-
-                while (cpt <= this.services.length -1) {
-
-                    if(this.services[cpt]
-                        .service_days
-                        .includes(
-                            addedDate
-                                .locale('en')
-                                .format('dddd')
-                                .toLowerCase()
-                        )
-                    ) {
-                        servicesArr.push(this.services[cpt])
-                    }
-
-                    cpt++
-                }
-
-                if(servicesArr.length > 0) {
-                    this.remainingDates.push({
-                        date: addedDate,
-                        hours: this.getSchedule(servicesArr),
-                        //services: servicesArr
-                    })
-                }
-
-                addedDate = addedDate.add(1, 'day')
-            }
         },
 
         selectBooking(service, day,time) {
