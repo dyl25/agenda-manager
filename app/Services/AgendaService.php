@@ -13,10 +13,6 @@ class AgendaService
     {
         $currentDate = null;
 
-//dd(Carbon::now()->isoFormat('dddd D'));
-        //dd(Carbon::getLocale());
-        //dd(\ResourceBundle::getLocales(''));
-
         if ($day && $month && $year) {
             $currentDate = Carbon::create($year . '-' . $month . '-' . $day)->setLocale('fr');
         } else {

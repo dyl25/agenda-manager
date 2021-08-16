@@ -28,7 +28,7 @@ class StoreServiceRequest extends FormRequest
             'places' => ['required', 'numeric', 'min:1', 'max:99'],
             'days' => ['nullable', 'array', 'max:7'],
             'days.*' => ['string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
-            'duration' => ['required','string'],
+            'duration' => ['required','string', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
             'price' => ['required', 'numeric'],
             'hours' => ['required', 'array'],
             'hours.*.startTime' => ['string', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],

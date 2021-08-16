@@ -20,9 +20,7 @@ class ServiceSettingController extends Controller
     }
 
     public function index() {
-        //dd($this->agendaService->getAgenda());
         return $this->agendaService->getAgenda();
-       //return ServiceSetting::with('times')->get();
     }
 
     public function store(StoreServiceRequest $request) {

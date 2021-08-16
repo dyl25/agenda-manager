@@ -96,13 +96,21 @@ class ServiceSetting extends Model
      *
      * @return void
      */
-    public static function getAllSchedules($services) {
+    public static function getAllSchedules(array $services): array
+    {
         $schedules = [];
 
         foreach ($services as $service) {
-            foreach($service->times as $time) {
-                for ($i = (int) $time->start_time; $i < (int) $time->end_time; $i += (int) $service->duration) {
-                    $schedules[$i] = $service;
+            foreach ($service->times as $time) {
+
+                $startTime = (int) $time->start_time;
+                $serviceDuration = (int) $service->duration;
+
+                while ($startTime <= (int) $time->end_time) {
+                    $strTime = strval($startTime);
+                    $hourKey = converStringTime($strTime);
+                    $schedules[$hourKey] = $service;
+                    $startTime = (int) $hourKey + $serviceDuration;
                 }
             }
         }
@@ -165,7 +173,8 @@ class ServiceSetting extends Model
      * @param string $date
      * @return integer
      */
-    public function getPlacesForDay(string $date): int {
+    public function getPlacesForDay(string $date): int
+    {
         return 0;
     }
 }
