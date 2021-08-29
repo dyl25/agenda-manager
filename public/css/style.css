@@ -6,3 +6,12 @@
     background-color: #0dcaf0;
     color: #f8f9fa;
 }
+
+.notif-container {
+    top: 2%;
+    right: 1%;
+    max-width: 86%;
+    display: block;
+    position: fixed;
+    z-index: 10000;
+}

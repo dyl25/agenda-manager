@@ -7,20 +7,21 @@ require('./bootstrap');
 
 Vue.prototype.$dayjs = dayjs
 
-Vue.filter('formatTime', function(value) {
-    const strVal = value.toString()
+Vue.filter('formatTime', function (value) {
+    let strVal = value.toString()
 
-    let insertPos = 2
-    
-    if(strVal.length === 3) {
-        insertPos = 1
+    const insertPos = 2
+
+    if (strVal.length < 4) {
+        let zeroStr = '0';
+        const nbReapeat = 4 - strVal.length;
+        strVal = zeroStr.repeat(nbReapeat) + strVal;
     }
 
-    const hours = value.slice(0, insertPos)
-    const minutes = value.slice(insertPos)
+    const hours = strVal.slice(0, insertPos)
+    const minutes = strVal.slice(insertPos)
 
     return [hours, ':', minutes].join('');
-
 })
 
 Vue.filter('formatInputTime', function (value) {

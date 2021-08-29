@@ -55,7 +55,7 @@ class AgendaService
                         'day' => $addedDate->isoFormat('dddd D'),
                         'completeDate' => $addedDate->isoFormat('dddd D MMMM YYYY')
                     ],
-                    'hours' => ServiceSetting::getAllSchedules($servicesArr)
+                    'hours' => ServiceSetting::getAllSchedules($servicesArr, $addedDate->isoFormat('YYYY-MM-DD'))
                 ]);
             }
 

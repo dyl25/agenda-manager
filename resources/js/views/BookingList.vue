@@ -17,7 +17,7 @@ export default {
 
     components: {
         Navbar,
-        ServiceDisplay,
+        ServiceDisplay
     },
 }
 

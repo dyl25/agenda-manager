@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/booking/{any}', function() {
-   // dd(converStringTime('06:71'), converStringTime('23:69'));
     return view('layouts.app-vue-front');
 })->where('any', '.*');
 

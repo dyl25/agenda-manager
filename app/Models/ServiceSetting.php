@@ -83,8 +83,16 @@ class ServiceSetting extends Model
         $schedule = [];
 
         foreach ($this->times as $time) {
-            for ($i = (int) $time->start_time; $i < (int) $time->end_time; $i += (int) $this->duration) {
-                array_push($schedule, $i);
+            $startTime = (int) $time->start_time;
+            $serviceDuration = (int) $this->duration;
+
+            while ($startTime <= (int) $time->end_time) {
+                $strTime = formatStringTime($startTime);
+                $hourKey = converStringTime($strTime);
+
+                array_push($schedule, $hourKey);
+
+                $startTime = (int) $hourKey + $serviceDuration;
             }
         }
 
@@ -96,7 +104,7 @@ class ServiceSetting extends Model
      *
      * @return void
      */
-    public static function getAllSchedules(array $services): array
+    public static function getAllSchedules(array $services, string $date): array
     {
         $schedules = [];
 
@@ -107,9 +115,15 @@ class ServiceSetting extends Model
                 $serviceDuration = (int) $service->duration;
 
                 while ($startTime <= (int) $time->end_time) {
-                    $strTime = strval($startTime);
+                    $strTime = formatStringTime($startTime);
+
                     $hourKey = converStringTime($strTime);
-                    $schedules[$hourKey] = $service;
+                    $correctFormatedHour = formatStringTime((int) $hourKey);
+
+                    $schedules[$hourKey] = [
+                        'service' => $service,
+                        'places' => $service->getRemainingPlaces($date . ' ' . $correctFormatedHour),
+                    ];
                     $startTime = (int) $hourKey + $serviceDuration;
                 }
             }
@@ -146,8 +160,9 @@ class ServiceSetting extends Model
      */
     public function getRemainingPlaces(string $moment): int
     {
+        //$moment = '2021-08-26 09:30:00';
         $selectedDate = Carbon::create($moment);
-
+        //dd($moment, $selectedDate->format('Y-m-d g:i:s'));
         $bookedPlaces = $this
             ->bookings()
             ->where('moment', $selectedDate->format('Y-m-d g:i:s'))

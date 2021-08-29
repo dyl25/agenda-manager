@@ -1,9 +1,19 @@
 <template>
     <section class="container">
 
+        <div class="notif-container" v-if="messages.length > 0">
+            <card v-for="(msg, index) in messages" :key="'msg' + index" @click.native="clearMessage(index)" :message="msg" />
+        </div>
+
+        <div class="notif-container" v-if="errors.length > 0">
+            <card v-for="(err, index) in errors" :key="'err' + index" @click.native="clearError(index)" :message="err" type="danger" />
+        </div>
+
         <booking-modal
             v-if="isBookingModalVisible"
             @close-modal="isBookingModalVisible = false"
+            @booking-success="pushNotif($event)"
+            @booking-error="pushError($event)"
             :current-service-data="selectedService"
             :current-day="selectedDay"
             :current-time="selectedTime"
@@ -27,10 +37,11 @@
                 >
                     <div
                         class="card m-1"
+                        v-if="service.places > 0"
                         @click="selectBooking(service, dateObj.dateFormat, time)"
                     >
                         <div class="card-body clickable">
-                            {{ time | formatTime }} - {{ service.name }} {{ service.places > 1 ? ' - ' + service.places + ' places' : null }}
+                            {{ time | formatTime }} - {{ service.service.name }} {{ service.places > 1 ? ' - ' + service.places + ' places' : null }}
                         </div>
                     </div>
                 </div>
@@ -41,14 +52,16 @@
 </template>
 
 <script>
-import axios from "axios";
-import BookingModal from './BookingModal.vue';
+import axios from "axios"
+import BookingModal from './BookingModal.vue'
+import Card from '../Card.vue'
 
 export default {
     name: "ServiceDisplay",
 
     components: {
         BookingModal,
+        Card,
     },
 
     props: {
@@ -75,6 +88,8 @@ export default {
             selectedService: null,
             selectedDay: null,
             selectedTime: null,
+            messages: [],
+            errors: [],
         };
     },
 
@@ -103,7 +118,23 @@ export default {
             this.selectedService = service
             this.selectedDay = day
             this.selectedTime = time
-        }
+        },
+
+        pushNotif(msg) {
+            this.messages.push(msg)
+        },
+
+        clearMessage(index) {
+            this.messages.splice(index, 1)
+        },
+
+        pushError(msg) {
+            this.errors.push(msg)
+        },
+
+        clearError(index) {
+            this.errors.splice(index, 1)
+        },
     },
 };
 </script>

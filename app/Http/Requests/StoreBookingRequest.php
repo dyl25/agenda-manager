@@ -36,7 +36,6 @@ class StoreBookingRequest extends FormRequest
      */
     public function rules()
     {
-        //dd($this->all());
         return [
             'user_id' => ['nullable', 'numeric','exist:users'],
             'service_id' => ['required', 'numeric', 'exists:service_settings,id'],

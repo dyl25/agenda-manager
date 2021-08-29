@@ -99,7 +99,7 @@ export default {
         return {
             form: {
                 user_id: null,
-                service_id: this.currentServiceData.id,
+                service_id: this.currentServiceData.service.id,
                 date: this.currentDay.date,
                 time: this.currentTime,
                 email: null,
@@ -107,7 +107,8 @@ export default {
                 firstname: null,
                 comments: null,
             },
-            isCreatingBooking: false
+            isCreatingBooking: false,
+            currentService: this.currentServiceData
         }
     },
 
@@ -119,20 +120,19 @@ export default {
         createBooking() {
             this.isCreatingBooking = true
 
-           // this.form.time = this.$options.filters.formatInputTime(this.form.time)
-
             let sendForm = {...this.form}
-            console.log(sendForm);
             sendForm.time = this.$options.filters.formatInputTime(sendForm.time)
 
-           axios.post('/api/bookings', sendForm)
+           axios.post('/api/book45ings', sendForm)
             .then(({data}) => {
                 this.isCreatingBooking = false
-                console.log(data);
+                this.currentService.places--
+                this.$emit('booking-success', 'Le service a bien été réseré.')
             })
             .catch(err => {
                 this.isCreatingBooking = false
                 console.log('Booking modal error: ' + err);
+                this.$emit('booking-error', 'Une erreur s\'est produite veuillez réessayer plus tard.')
             })
         }
 
