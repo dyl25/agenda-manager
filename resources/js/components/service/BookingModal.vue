@@ -2,7 +2,7 @@
 <modal @close-modal="closeModal">
     <template v-slot:content>
     <div class="modal-header">
-        <h5 class="modal-title">Réservation: {{ currentServiceData.name }}</h5>
+        <h5 class="modal-title">Réservation: {{ currentServiceData.service.name }}</h5>
         <button @click="closeModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
@@ -17,21 +17,31 @@
 
                 <div class="col-sm-6">
                     <label for="exampleFormControlInput1" class="form-label">Heure</label>
-                    <input class="form-control" type="time" :value="currentTime | formatInputTime" readonly>
+                    <input class="form-control" type="time" :value="currentTime | formatTime" readonly>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <div class="col-sm-6">
                     <label for="emailInput" class="form-label">Email</label>
-                    <input v-model="form.email" type="email" class="form-control" id="emailInput"
-                        placeholder="name@example.com">
+                    <div class="input-group has-validation">
+                        <input v-model="form.email" type="email" class="form-control" id="emailInput"
+                            placeholder="name@example.com" :class="{'is-invalid' : formErrors.email}">
+                        <div v-if="formErrors.email" class="invalid-feedback">
+                            <span v-for="(inputErr, index) in formErrors.email" :key="'inputErr' + index">{{ inputErr }}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-sm-6">
                     <label for="mobileInput" class="form-label">GSM</label>
-                    <input v-model="form.mobile" type="tel" class="form-control" id="mobileInput"
-                        placeholder="+324445566">
+                    <div class="input-group has-validation">
+                        <input v-model="form.mobile" type="tel" class="form-control" id="mobileInput"
+                            placeholder="+324445566" :class="{'is-invalid' : formErrors.mobile}">
+                        <div v-if="formErrors.mobile" class="invalid-feedback">
+                            <span v-for="(inputErr, index) in formErrors.mobile" :key="'inputErr' + index">{{ inputErr }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -39,21 +49,36 @@
 
                 <div class="col-sm-6">
                     <label for="nameInput" class="form-label">Nom</label>
-                    <input v-model="form.name" type="text" class="form-control" id="nameInput"
-                        placeholder="Doe">
+                    <div class="input-group has-validation">
+                        <input v-model="form.name" type="text" class="form-control" id="nameInput"
+                            placeholder="Doe" :class="{'is-invalid' : formErrors.name}">
+                        <div v-if="formErrors.name" class="invalid-feedback">
+                            <span v-for="(inputErr, index) in formErrors.name" :key="'inputErr' + index">{{ inputErr }}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-sm-6">
                     <label for="firstnameInput" class="form-label">Prénom</label>
-                    <input v-model="form.firstname" type="text" class="form-control" id="firstnameInput"
-                        placeholder="John">
+                    <div class="input-group has-validation">
+                        <input v-model="form.firstname" type="text" class="form-control" id="firstnameInput"
+                            placeholder="John" :class="{'is-invalid' : formErrors.firstname}">
+                        <div v-if="formErrors.firstname" class="invalid-feedback">
+                            <span v-for="(inputErr, index) in formErrors.firstname" :key="'inputErr' + index">{{ inputErr }}</span>
+                        </div>
+                    </div>
                 </div>
 
             </div>
 
             <div class="mb-5">
                 <label for="commentsInput" class="form-label">Commentaires</label>
-                <textarea v-model="form.comments" placeholder="Mon commentaire ..." class="form-control" id="commentsInput" rows="3"></textarea>
+                <div class="input-group has-validation">
+                    <textarea v-model="form.comments" placeholder="Mon commentaire ..." class="form-control" id="commentsInput" rows="3" :class="{'is-invalid' : formErrors.comments}"></textarea>
+                    <div v-if="formErrors.comments" class="invalid-feedback">
+                            <span v-for="(inputErr, index) in formErrors.comments" :key="'inputErr' + index">{{ inputErr }}</span>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
@@ -108,7 +133,8 @@ export default {
                 comments: null,
             },
             isCreatingBooking: false,
-            currentService: this.currentServiceData
+            currentService: this.currentServiceData,
+            formErrors: {},
         }
     },
 
@@ -121,9 +147,9 @@ export default {
             this.isCreatingBooking = true
 
             let sendForm = {...this.form}
-            sendForm.time = this.$options.filters.formatInputTime(sendForm.time)
+            sendForm.time = this.$options.filters.formatTime(sendForm.time)
 
-           axios.post('/api/book45ings', sendForm)
+           axios.post('/api/bookings', sendForm)
             .then(({data}) => {
                 this.isCreatingBooking = false
                 this.currentService.places--
@@ -132,7 +158,12 @@ export default {
             .catch(err => {
                 this.isCreatingBooking = false
                 console.log('Booking modal error: ' + err);
-                this.$emit('booking-error', 'Une erreur s\'est produite veuillez réessayer plus tard.')
+
+                if(err.response.status === 422) {
+                    this.formErrors = err.response.data.errors
+                }else {
+                    this.$emit('booking-error', 'Une erreur s\'est produite veuillez réessayer plus tard.')
+                }
             })
         }
 

@@ -143,7 +143,7 @@ class ServiceSetting extends Model
         $selectedDate = Carbon::create($moment);
 
         $dayStr = strtolower($selectedDate->englishDayOfWeek);
-        $time =  (int) ($selectedDate->format('g') . $selectedDate->format('i'));
+        $time =  (int) ($selectedDate->format('G') . $selectedDate->format('i'));
 
         return
             in_array($time, $this->getSchedule())
@@ -160,12 +160,11 @@ class ServiceSetting extends Model
      */
     public function getRemainingPlaces(string $moment): int
     {
-        //$moment = '2021-08-26 09:30:00';
         $selectedDate = Carbon::create($moment);
-        //dd($moment, $selectedDate->format('Y-m-d g:i:s'));
+
         $bookedPlaces = $this
             ->bookings()
-            ->where('moment', $selectedDate->format('Y-m-d g:i:s'))
+            ->where('moment', $selectedDate->format('Y-m-d G:i:s'))
             ->count();
 
         return $this->places - $bookedPlaces;

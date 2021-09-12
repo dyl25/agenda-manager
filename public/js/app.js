@@ -2043,6 +2043,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2077,7 +2102,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         comments: null
       },
       isCreatingBooking: false,
-      currentService: this.currentServiceData
+      currentService: this.currentServiceData,
+      formErrors: {}
     };
   },
   methods: {
@@ -2091,8 +2117,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var sendForm = _objectSpread({}, this.form);
 
-      sendForm.time = this.$options.filters.formatInputTime(sendForm.time);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/book45ings', sendForm).then(function (_ref) {
+      sendForm.time = this.$options.filters.formatTime(sendForm.time);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/bookings', sendForm).then(function (_ref) {
         var data = _ref.data;
         _this.isCreatingBooking = false;
         _this.currentService.places--;
@@ -2102,7 +2128,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.isCreatingBooking = false;
         console.log('Booking modal error: ' + err);
 
-        _this.$emit('booking-error', 'Une erreur s\'est produite veuillez réessayer plus tard.');
+        if (err.response.status === 422) {
+          _this.formErrors = err.response.data.errors;
+        } else {
+          _this.$emit('booking-error', 'Une erreur s\'est produite veuillez réessayer plus tard.');
+        }
       });
     }
   }
@@ -20920,7 +20950,9 @@ var render = function() {
           return [
             _c("div", { staticClass: "modal-header" }, [
               _c("h5", { staticClass: "modal-title" }, [
-                _vm._v("Réservation: " + _vm._s(_vm.currentServiceData.name))
+                _vm._v(
+                  "Réservation: " + _vm._s(_vm.currentServiceData.service.name)
+                )
               ]),
               _vm._v(" "),
               _c("button", {
@@ -20974,7 +21006,7 @@ var render = function() {
                         staticClass: "form-control",
                         attrs: { type: "time", readonly: "" },
                         domProps: {
-                          value: _vm._f("formatInputTime")(_vm.currentTime)
+                          value: _vm._f("formatTime")(_vm.currentTime)
                         }
                       })
                     ])
@@ -20991,31 +21023,50 @@ var render = function() {
                         [_vm._v("Email")]
                       ),
                       _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.email,
-                            expression: "form.email"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "email",
-                          id: "emailInput",
-                          placeholder: "name@example.com"
-                        },
-                        domProps: { value: _vm.form.email },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                      _c("div", { staticClass: "input-group has-validation" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.email,
+                              expression: "form.email"
                             }
-                            _vm.$set(_vm.form, "email", $event.target.value)
+                          ],
+                          staticClass: "form-control",
+                          class: { "is-invalid": _vm.formErrors.email },
+                          attrs: {
+                            type: "email",
+                            id: "emailInput",
+                            placeholder: "name@example.com"
+                          },
+                          domProps: { value: _vm.form.email },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(_vm.form, "email", $event.target.value)
+                            }
                           }
-                        }
-                      })
+                        }),
+                        _vm._v(" "),
+                        _vm.formErrors.email
+                          ? _c(
+                              "div",
+                              { staticClass: "invalid-feedback" },
+                              _vm._l(_vm.formErrors.email, function(
+                                inputErr,
+                                index
+                              ) {
+                                return _c("span", { key: "inputErr" + index }, [
+                                  _vm._v(_vm._s(inputErr))
+                                ])
+                              }),
+                              0
+                            )
+                          : _vm._e()
+                      ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-sm-6" }, [
@@ -21028,31 +21079,50 @@ var render = function() {
                         [_vm._v("GSM")]
                       ),
                       _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.mobile,
-                            expression: "form.mobile"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "tel",
-                          id: "mobileInput",
-                          placeholder: "+324445566"
-                        },
-                        domProps: { value: _vm.form.mobile },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                      _c("div", { staticClass: "input-group has-validation" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.mobile,
+                              expression: "form.mobile"
                             }
-                            _vm.$set(_vm.form, "mobile", $event.target.value)
+                          ],
+                          staticClass: "form-control",
+                          class: { "is-invalid": _vm.formErrors.mobile },
+                          attrs: {
+                            type: "tel",
+                            id: "mobileInput",
+                            placeholder: "+324445566"
+                          },
+                          domProps: { value: _vm.form.mobile },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(_vm.form, "mobile", $event.target.value)
+                            }
                           }
-                        }
-                      })
+                        }),
+                        _vm._v(" "),
+                        _vm.formErrors.mobile
+                          ? _c(
+                              "div",
+                              { staticClass: "invalid-feedback" },
+                              _vm._l(_vm.formErrors.mobile, function(
+                                inputErr,
+                                index
+                              ) {
+                                return _c("span", { key: "inputErr" + index }, [
+                                  _vm._v(_vm._s(inputErr))
+                                ])
+                              }),
+                              0
+                            )
+                          : _vm._e()
+                      ])
                     ])
                   ]),
                   _vm._v(" "),
@@ -21067,31 +21137,50 @@ var render = function() {
                         [_vm._v("Nom")]
                       ),
                       _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.name,
-                            expression: "form.name"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          id: "nameInput",
-                          placeholder: "Doe"
-                        },
-                        domProps: { value: _vm.form.name },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                      _c("div", { staticClass: "input-group has-validation" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.name,
+                              expression: "form.name"
                             }
-                            _vm.$set(_vm.form, "name", $event.target.value)
+                          ],
+                          staticClass: "form-control",
+                          class: { "is-invalid": _vm.formErrors.name },
+                          attrs: {
+                            type: "text",
+                            id: "nameInput",
+                            placeholder: "Doe"
+                          },
+                          domProps: { value: _vm.form.name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(_vm.form, "name", $event.target.value)
+                            }
                           }
-                        }
-                      })
+                        }),
+                        _vm._v(" "),
+                        _vm.formErrors.name
+                          ? _c(
+                              "div",
+                              { staticClass: "invalid-feedback" },
+                              _vm._l(_vm.formErrors.name, function(
+                                inputErr,
+                                index
+                              ) {
+                                return _c("span", { key: "inputErr" + index }, [
+                                  _vm._v(_vm._s(inputErr))
+                                ])
+                              }),
+                              0
+                            )
+                          : _vm._e()
+                      ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-sm-6" }, [
@@ -21104,31 +21193,54 @@ var render = function() {
                         [_vm._v("Prénom")]
                       ),
                       _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.firstname,
-                            expression: "form.firstname"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          id: "firstnameInput",
-                          placeholder: "John"
-                        },
-                        domProps: { value: _vm.form.firstname },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                      _c("div", { staticClass: "input-group has-validation" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.firstname,
+                              expression: "form.firstname"
                             }
-                            _vm.$set(_vm.form, "firstname", $event.target.value)
+                          ],
+                          staticClass: "form-control",
+                          class: { "is-invalid": _vm.formErrors.firstname },
+                          attrs: {
+                            type: "text",
+                            id: "firstnameInput",
+                            placeholder: "John"
+                          },
+                          domProps: { value: _vm.form.firstname },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.form,
+                                "firstname",
+                                $event.target.value
+                              )
+                            }
                           }
-                        }
-                      })
+                        }),
+                        _vm._v(" "),
+                        _vm.formErrors.firstname
+                          ? _c(
+                              "div",
+                              { staticClass: "invalid-feedback" },
+                              _vm._l(_vm.formErrors.firstname, function(
+                                inputErr,
+                                index
+                              ) {
+                                return _c("span", { key: "inputErr" + index }, [
+                                  _vm._v(_vm._s(inputErr))
+                                ])
+                              }),
+                              0
+                            )
+                          : _vm._e()
+                      ])
                     ])
                   ]),
                   _vm._v(" "),
@@ -21142,31 +21254,50 @@ var render = function() {
                       [_vm._v("Commentaires")]
                     ),
                     _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.comments,
-                          expression: "form.comments"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: {
-                        placeholder: "Mon commentaire ...",
-                        id: "commentsInput",
-                        rows: "3"
-                      },
-                      domProps: { value: _vm.form.comments },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
+                    _c("div", { staticClass: "input-group has-validation" }, [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.comments,
+                            expression: "form.comments"
                           }
-                          _vm.$set(_vm.form, "comments", $event.target.value)
+                        ],
+                        staticClass: "form-control",
+                        class: { "is-invalid": _vm.formErrors.comments },
+                        attrs: {
+                          placeholder: "Mon commentaire ...",
+                          id: "commentsInput",
+                          rows: "3"
+                        },
+                        domProps: { value: _vm.form.comments },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(_vm.form, "comments", $event.target.value)
+                          }
                         }
-                      }
-                    })
+                      }),
+                      _vm._v(" "),
+                      _vm.formErrors.comments
+                        ? _c(
+                            "div",
+                            { staticClass: "invalid-feedback" },
+                            _vm._l(_vm.formErrors.comments, function(
+                              inputErr,
+                              index
+                            ) {
+                              return _c("span", { key: "inputErr" + index }, [
+                                _vm._v(_vm._s(inputErr))
+                              ])
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "row" }, [
