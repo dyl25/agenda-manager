@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ServiceSettingIndexRequest;
 use App\Http\Requests\StoreServiceRequest;
 use App\Models\ServiceSetting;
 use App\Models\ServiceSettingsTimes;
@@ -19,9 +20,13 @@ class ServiceSettingController extends Controller
         $this->agendaService = $agendaService;
     }
 
-    public function index() {
-        //dd($this->agendaService->getAgenda());
-        return $this->agendaService->getAgenda();
+    public function index(ServiceSettingIndexRequest $request) {
+        return $this->agendaService->getAgenda(
+            null, 
+            $request->validated()['year'],
+            $request->validated()['month'],
+            $request->validated()['day'],
+        );
     }
 
     public function store(StoreServiceRequest $request) {

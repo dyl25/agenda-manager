@@ -2208,6 +2208,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2259,6 +2272,13 @@ __webpack_require__.r(__webpack_exports__);
         _this.isServiceLoading = false;
         console.log(error);
       });
+    },
+    changeMonth: function changeMonth(direction) {
+      if (direction === 'previous') {
+        this.currentDate = this.currentDate.subtract(1, 'month');
+      }
+
+      this.currentDate.add(1, 'month');
     },
     selectBooking: function selectBooking(service, day, time) {
       this.isBookingModalVisible = true;
@@ -21422,8 +21442,44 @@ var render = function() {
         "div",
         { staticClass: "row mb-3" },
         [
-          _c("h2", { staticClass: "fs-1 mb-2" }, [
-            _vm._v(_vm._s(_vm.currentDate.format("MMMM YYYY")))
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-lg-4" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.changeMonth("previous")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-arrow-left" })]
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-lg-4" }, [
+              _c("h2", { staticClass: "fs-1 mb-2" }, [
+                _vm._v(_vm._s(_vm.currentDate.format("MMMM YYYY")))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-lg-4" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.changeMonth("next")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-arrow-right" })]
+              )
+            ])
           ]),
           _vm._v(" "),
           _vm._l(_vm.remainingDates, function(dateObj, index) {

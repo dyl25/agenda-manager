@@ -20,7 +20,20 @@
         />
 
         <div class="row mb-3">
-            <h2 class="fs-1 mb-2">{{ currentDate.format('MMMM YYYY') }}</h2>
+
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <button @click="changeMonth('previous')" type="button" class="btn btn-primary"><i class="fas fa-arrow-left"></i></button>
+                </div>
+                <div class="col-lg-4">
+                    <h2 class="fs-1 mb-2">{{ currentDate.format('MMMM YYYY') }}</h2>
+                </div>
+                <div class="col-lg-4">
+                    <button @click="changeMonth('next')" type="button" class="btn btn-primary"><i class="fas fa-arrow-right"></i></button>
+                </div>
+
+            </div>
 
             <div
                 class="row"
@@ -100,7 +113,7 @@ export default {
     methods: {
         loadData() {
             this.isServiceLoading = true;
-            axios.get(this.allServicesUrl)
+            axios.get(`${this.allServicesUrl}/${this.currentDate.year()}/`)
                 .then(({ data }) => {
                     this.isServiceLoading = false;
                     this.remainingDates = data
@@ -110,6 +123,15 @@ export default {
 
                     console.log(error);
                 });
+        },
+
+        changeMonth(direction) {
+
+            if(direction === 'previous') {
+                this.currentDate = this.currentDate.subtract(1, 'month')
+            }
+
+            this.currentDate.add(1, 'month')
         },
 
         selectBooking(service, day,time) {
