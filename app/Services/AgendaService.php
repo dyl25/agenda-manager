@@ -14,7 +14,7 @@ class AgendaService
         $currentDate = null;
 
         if ($day && $month && $year) {
-            $currentDate = Carbon::create($year . '-' . $month . '-' . $day)->setLocale('fr');
+            $currentDate = Carbon::create($year . '-' . $month . '-' . $day);
         } else {
             $currentDate = Carbon::now();
         }

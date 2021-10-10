@@ -19,15 +19,20 @@
             :current-time="selectedTime"
         />
 
-        <div class="row mb-3">
+        <div 
+        v-if="errors.length === 0"
+        class="row mb-3"
+        >
 
             <div class="row">
 
-                <div class="col-lg-4">
+                <div 
+                v-if="(currentDate.month() > defaultDate.month()) || (currentDate.year() > defaultDate.year())"
+                class="col-lg-4">
                     <button @click="changeMonth('previous')" type="button" class="btn btn-primary"><i class="fas fa-arrow-left"></i></button>
                 </div>
                 <div class="col-lg-4">
-                    <h2 class="fs-1 mb-2">{{ currentDate.format('MMMM YYYY') }}</h2>
+                    <h2 class="fs-1 mb-2">{{ currentDate.format('MMMM YYYY') | capitalizeFirstLetter }}</h2>
                 </div>
                 <div class="col-lg-4">
                     <button @click="changeMonth('next')" type="button" class="btn btn-primary"><i class="fas fa-arrow-right"></i></button>
@@ -35,6 +40,7 @@
 
             </div>
 
+            <template v-if="!isServiceLoading">
             <div
                 class="row"
                 v-for="(dateObj, index) in remainingDates"
@@ -60,7 +66,16 @@
                 </div>
 
             </div>
+            </template>
+            <loader v-else />
         </div>
+
+        <div v-else>
+            <div class="notif-container">
+                <card v-for="(err, index) in errors" :key="'err' + index" @click.native="clearError(index)" :message="err" type="danger" />
+            </div>
+        </div>
+
     </section>
 </template>
 
@@ -68,6 +83,7 @@
 import axios from "axios"
 import BookingModal from './BookingModal.vue'
 import Card from '../Card.vue'
+import Loader from '../Loader.vue'
 
 export default {
     name: "ServiceDisplay",
@@ -75,6 +91,7 @@ export default {
     components: {
         BookingModal,
         Card,
+        Loader,
     },
 
     props: {
@@ -113,13 +130,41 @@ export default {
     methods: {
         loadData() {
             this.isServiceLoading = true;
-            axios.get(`${this.allServicesUrl}/${this.currentDate.year()}/`)
+
+            let beginDay = 1
+
+            if(
+                this.currentDate.year() === this.defaultDate.year()
+                && 
+                this.currentDate.month() === this.defaultDate.month()
+            ) {
+                beginDay = this.defaultDate.date()
+            }
+
+            const params = {
+                year: this.currentDate.year(),
+                month: this.currentDate.month() +1,
+                day: beginDay,
+            }
+
+            const headers = {
+                'Content-Type': 'application/json'
+            }
+
+            axios
+                .get(
+                    this.allServicesUrl,
+                    { params },
+                    { headers },
+                )
                 .then(({ data }) => {
                     this.isServiceLoading = false;
                     this.remainingDates = data
                 })
                 .catch((error) => {
                     this.isServiceLoading = false;
+
+                    this.pushError('Une erreur s\'est produite veuillez réessayer plus tard.')
 
                     console.log(error);
                 });
@@ -131,7 +176,11 @@ export default {
                 this.currentDate = this.currentDate.subtract(1, 'month')
             }
 
-            this.currentDate.add(1, 'month')
+            if(direction === 'next') {
+                this.currentDate = this.currentDate.add(1, 'month')
+            }
+
+            this.loadData()
         },
 
         selectBooking(service, day,time) {

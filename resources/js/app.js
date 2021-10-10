@@ -37,6 +37,11 @@ Vue.filter('formatInputTime', function (value) {
     return [hours, ':', minutes].join('');
 })
 
+Vue.filter('capitalizeFirstLetter', function (value) {
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+})
+
 new Vue({
     router: router,
 }).$mount('#app')
